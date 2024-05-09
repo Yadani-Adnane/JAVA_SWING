@@ -3,13 +3,10 @@ package View;
 import javax.swing.*;
 
 import java.awt.event.ActionListener;
-import java.sql.*;
+
 
 public class AuthentificationForm extends javax.swing.JFrame {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public AuthentificationForm() {
         initComponents();

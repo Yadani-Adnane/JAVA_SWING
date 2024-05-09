@@ -27,21 +27,23 @@ public class AuthentificationController {
             String password = view.getPassword();
             boolean isAuthenticated = model.authenticate(username, password);
             if (isAuthenticated) {
-                // Redirect to home page or perform other actions
                 
             	System.out.println("Authentication successful!");
             	openHomePage();
+            	
             } else {
-                // Display error message
                 JOptionPane.showMessageDialog(view, "Incorrect username or password", "Error", JOptionPane.ERROR_MESSAGE);
                 
             }
         }
         private void openHomePage() {
             HomePage homePage = new HomePage();
-            homePage.setExtendedState(JFrame.MAXIMIZED_BOTH); // Set to fullscreen mode
+            homePage.setExtendedState(JFrame.MAXIMIZED_BOTH); 
             homePage.setVisible(true);
-            view.dispose(); // Close the login form
+            view.dispose();
         }
+        
     }
+    
+    
 }
