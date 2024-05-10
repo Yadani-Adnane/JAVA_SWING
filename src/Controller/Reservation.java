@@ -21,10 +21,11 @@ public class Reservation {
         this.frais_de_reservation=frais_de_reservation;
     }
 
-    public void payer() throws IllegalAccessException {
+    public void payer(String recu) throws IllegalAccessException {
         this.payee=1;
+        this.recu=recu;
         Bd b = new Bd();
-        b.delete(this);
+        b.update(this, String.valueOf(this.id_reservation));
     }
 
     public int getId_reservation() {

@@ -52,6 +52,13 @@ public class Bd {
             System.out.println(query);
             try {
                 rs = st.executeQuery(query);
+                if(con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException e) {
+                        System.out.println("Une erreur s'est produite lors de la fermeture de la connexion : " + e.getMessage());
+                    }
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -61,10 +68,12 @@ public class Bd {
                     return rs.getInt("fun");
                 }else return -1;
 
+
             } catch (SQLException e) {
                  System.out.println(new RuntimeException(e).getMessage());
                 return -1;
             }
+
         }else return -1;
     }
     // methode de selection de données
@@ -108,6 +117,13 @@ public class Bd {
                     Object ob = constructor.newInstance(list.toArray()); // création d'une instance de la classe de notre table
                     donnees.add(ob); // regrouper les données dans le conteneur
                 }
+                if(con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException e) {
+                        System.out.println("Une erreur s'est produite lors de la fermeture de la connexion : " + e.getMessage());
+                    }
+                }
 
             } catch (Exception e) {
                 System.out.println("Error!" + e.getMessage());
@@ -135,6 +151,13 @@ public class Bd {
             setParameters(pstmt, o); // voir le code la méthode en bas
             System.out.println(pstmt);
             pstmt.executeUpdate();
+            if(con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    System.out.println("Une erreur s'est produite lors de la fermeture de la connexion : " + e.getMessage());
+                }
+            }
             return true;
         } catch (SQLException e) {
             return false;
@@ -153,13 +176,17 @@ public class Bd {
             fields[i].setAccessible(true);// permet l'accès au attributs privés de la classe
             if (!List.class.isAssignableFrom(fields[i].getType())){ // condition pour ignorer les attributs de type list ou array list
                 if(fields[i].getType().equals(String.class)){
+                    if (i >0){
+                        query += ",";
+                    }
                     query += fields[i].getName().toLowerCase()+"="+a+fields[i].get(o).toString()+a;
                 }else {
+                    if (i >0){
+                        query += ",";
+                    }
                     query += fields[i].getName().toLowerCase()+"="+fields[i].get(o).toString();
                 }
-                if (i < o.getClass().getDeclaredFields().length -1){
-                    query += ",";
-                }
+
             }
         }
         // condition de la requete
@@ -168,6 +195,13 @@ public class Bd {
         try {
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.executeUpdate();
+            if(con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    System.out.println("Une erreur s'est produite lors de la fermeture de la connexion : " + e.getMessage());
+                }
+            }
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -185,6 +219,13 @@ public class Bd {
             try {
                 PreparedStatement pstmt = con.prepareStatement(query);
                 pstmt.executeUpdate();
+                if(con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException e) {
+                        System.out.println("Une erreur s'est produite lors de la fermeture de la connexion : " + e.getMessage());
+                    }
+                }
                 return true;
             } catch (SQLException e) {
                 return false;

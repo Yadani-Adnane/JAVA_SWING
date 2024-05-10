@@ -90,7 +90,7 @@ public class ReservationsController {
                         System.out.println("Le bureau n'est pas pris en charge ou le fichier n'existe pas.");
                     }
                     try {
-                        r.payer();
+                        r.payer(f);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }

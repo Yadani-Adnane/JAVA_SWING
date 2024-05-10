@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Bd;
+import Model.Residant;
 import View.GestionDesBatimentsView;
 
 import javax.swing.*;
@@ -311,8 +312,10 @@ public class GestionDesBatimentsController {
                         view.etat_list3.setSelectedIndex(Integer.parseInt( view.table3.getValueAt(rowIndex, 4).toString()));
                         view.reservation_list.setSelectedIndex(Integer.parseInt( view.table3.getValueAt(rowIndex,5).toString()));
                         view.id_tf3.setEnabled(false);
-                        view.etat_list3.setEnabled(false);
                         view.id_etage_tf1.setEnabled(false);
+                        if (view.table3.getValueAt(rowIndex, 4).toString().equals("0")){
+                            view.etat_list3.setEnabled(false);
+                        }else view.id_etage_tf1.setEnabled(true);
                         view.reservation_list.setEnabled(false);
                         Etage et = null;
                         try {
@@ -637,7 +640,7 @@ public class GestionDesBatimentsController {
         new Etage(view.id_etage_tf.getText().toUpperCase(),etat,view.id_bat1.getSelectedItem().toString().toUpperCase(),Integer.parseInt(view.numetagetf.getText())).modifier(model,view.table2.getValueAt(rowIndex, 0).toString());
         List<Object> ch = model.select("*","Chambre","id_etage = '"+view.id_etage_tf.getText().toUpperCase()+"'");
         int nbch = ch.size();
-        List<Object> chdispo = model.select("*","Chambre","id_etage = '"+view.id_etage_tf.getText().toUpperCase()+"' and etat = 1");
+        List<Object> chdispo = model.select("*","Chambre","id_etage = '"+view.id_etage_tf.getText().toUpperCase()+"' and reservee = 0 and etat = 1");
         int nbchdispo = chdispo.size();
         chargerBat();
     }
@@ -678,7 +681,7 @@ public class GestionDesBatimentsController {
             List<Object> et = model.select("*","Etage","id_batiment = '"+((Batiment) donnees.get(i)).getId_batiment().toUpperCase()+"'");
             for (int j = 0; j < et.size(); j++) {
                 List<Object> ch = model.select("*","Chambre","id_etage = '"+((Etage) et.get(j)).getId_etage().toUpperCase()+"'");
-                List<Object> chdispo = model.select("*","Chambre","id_etage = '"+((Etage) et.get(j)).getId_etage().toUpperCase()+"' and reservee = 1 and etat =1");
+                List<Object> chdispo = model.select("*","Chambre","id_etage = '"+((Etage) et.get(j)).getId_etage().toUpperCase()+"' and reservee = 0 and etat =1");
                 nbchdispo += chdispo.size();
                 nbch += ch.size();
             }
@@ -700,7 +703,7 @@ public class GestionDesBatimentsController {
         for (int i = 0; i < donnees.size(); i++) {
             List<Object> ch = model.select("*","Chambre","id_etage = '"+((Etage) donnees.get(i)).getId_etage().toUpperCase()+"'");
             nbch += ch.size();
-            List<Object> chdispo = model.select("*","Chambre","id_etage = '"+((Etage) donnees.get(i)).getId_etage().toUpperCase()+"' and reservee = 1 and etat =1");
+            List<Object> chdispo = model.select("*","Chambre","id_etage = '"+((Etage) donnees.get(i)).getId_etage().toUpperCase()+"' and reservee = 0 and etat =1");
             nbchdispo += chdispo.size();
             Object[] o= {((Etage) donnees.get(i)).getId_batiment().toUpperCase(),((Etage) donnees.get(i)).getId_etage().toUpperCase(),(((Etage) donnees.get(i)).getNum()),(((Etage) donnees.get(i)).getEtat()),nbch,nbchdispo};
             view.modell.addRow(o);
@@ -714,7 +717,13 @@ public class GestionDesBatimentsController {
         List<Object> donnees=model.select("*","Chambre","1=1");
         for (int i = 0; i < donnees.size(); i++) {
             Etage et = (Etage) model.select("*","Etage","id_etage ='"+((Chambre) donnees.get(i)).getId_etage().toUpperCase()+"'").get(0);
-            Object[] o= {et.getId_batiment().toUpperCase(),((Chambre) donnees.get(i)).getId_etage().toUpperCase(),((Chambre) donnees.get(i)).getId_chambre().toUpperCase(),((Chambre) donnees.get(i)).getNum(),((Chambre) donnees.get(i)).getEtat(),((Chambre) donnees.get(i)).getReservee()};
+            Reservation r;
+            String resi;
+            if(model.select("*","Reservation", "id_chambre ='"+((Chambre) donnees.get(i)).getId_chambre().toUpperCase()+"'").size()>0){
+                r =(Reservation) model.select("*","Reservation", "id_chambre ='"+((Chambre) donnees.get(i)).getId_chambre().toUpperCase()+"'").get(0);
+                resi =r.getId_residant();;
+            }else resi ="";
+            Object[] o= {et.getId_batiment().toUpperCase(),((Chambre) donnees.get(i)).getId_etage().toUpperCase(),((Chambre) donnees.get(i)).getId_chambre().toUpperCase(),((Chambre) donnees.get(i)).getNum(),((Chambre) donnees.get(i)).getEtat(),((Chambre) donnees.get(i)).getReservee(),resi};
             view.modelll.addRow(o);
         }
 
